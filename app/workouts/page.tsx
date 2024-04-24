@@ -1,38 +1,27 @@
-import connectDB from "../lib/connect-db";
-import Workout from "../schemas/mongoose/workout";
+// import connectDB from "../lib/connect-db";
+// import Workout from "../schemas/mongoose/workout";
+import { supabase } from "../utils/supabase/supabaseClient";
 
-async function getWorkouts() {
-  // Connect to the database
-  await connectDB();
-
+export default async function Page() {
   try {
-    // Find all workouts
-    const workouts = await Workout.find().exec();
+    const { data: notes, error } = await supabase.from("notes").select("*");
 
-    if (!workouts) {
-      throw new Error("No workouts found");
+    if (error) {
+      console.error("Error fetching notes:", error);
+      throw error;
     }
 
-    // Convert Mongoose documents to plain JavaScript objects
-    const jsonData = workouts.map((workout) => workout.toObject());
-
-    return jsonData;
+    return (
+      <>
+        <div className="flex justify-center mt-10 items-center">
+          <h1 className="text-center text-2xl">Your workouts</h1>
+          <button className="btn btn-sm btn-primary">Create workout</button>
+        </div>
+        <pre>{JSON.stringify(notes, null, 2)}</pre>
+      </>
+    );
   } catch (error) {
-    console.error(error);
-    throw new Error("Failed to fetch workouts");
+    console.error("Page error:", error);
+    return <div>Error fetching data.</div>;
   }
-}
-
-export default async function page() {
-  const data = await getWorkouts();
-  console.log(data);
-  return (
-    <>
-      <div className="flex justify-center mt-10 items-center">
-        <h1 className="text-center text-2xl">Your workouts</h1>
-
-        <button className="btn btn-sm btn-primary">Create workout</button>
-      </div>
-    </>
-  );
 }
