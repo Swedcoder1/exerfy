@@ -1,5 +1,6 @@
 import { supabase } from "../utils/supabase/supabaseClient";
 import { LuDumbbell } from "react-icons/lu";
+import Link from "next/link";
 
 export default async function Page() {
   try {
@@ -16,9 +17,12 @@ export default async function Page() {
       <>
         <div className=" text-center mt-10">
           <h1 className="text-2xl flex-grow">Your workouts</h1>
-          <button className="btn btn-sm btn-primary mt-2">
+          <Link
+            href="/workouts/createworkout"
+            className="btn btn-sm btn-primary mt-2"
+          >
             Create workout
-          </button>
+          </Link>
         </div>
 
         <div>
